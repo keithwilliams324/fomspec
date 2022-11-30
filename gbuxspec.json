@@ -1,0 +1,1181 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "GBU-X Demo FOM Service API Version 1.0.1",
+      "description": "API for calculating trajectories and retrieving information about a GBU-X weapon variants.",
+      "version": "1.0.1"
+    },
+    "paths": {
+      "/calculation": {
+        "post": {
+          "tags": [
+            "CalculationApi"
+          ],
+          "summary": "Provides calculation results.",
+          "description": "Provides all requested calculation results for the specified weapon varaint utilizing the conditions set for calculation.",
+          "parameters": [
+            {
+              "name": "api-version",
+              "in": "query",
+              "description": "The requested API version",
+              "schema": {
+                "type": "string",
+                "default": "1"
+              }
+            },
+            {
+              "name": "accept-Version",
+              "in": "header",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "A JSON-formatted string of a collection of calculation parameters to be used for calculation. The calculation parameters should follow the prescribed format for calculation parameters as listed in this schema.",
+            "content": {
+              "application/json; api-version=1": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/*+json; api-version=1": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "A JSON-formatted string of calculation results. The calculation results should follow the prescribed format for calculation results as listed in this schema.",
+              "content": {
+                "text/plain; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid Parameters"
+            },
+            "500": {
+              "description": "Internal Exception",
+              "content": {
+                "text/plain; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/information": {
+        "get": {
+          "tags": [
+            "InformationApi"
+          ],
+          "summary": "Provides information regarding the FOM.",
+          "description": "Provides information regarding the FOM and its weapon variants.",
+          "parameters": [
+            {
+              "name": "api-version",
+              "in": "query",
+              "description": "The requested API version",
+              "schema": {
+                "type": "string",
+                "default": "1"
+              }
+            },
+            {
+              "name": "accept-Version",
+              "in": "header",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "A JSON-formatted string of FOM information. The information should follow the prescribed format for FOM information as listed in this schema.",
+              "content": {
+                "text/plain; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Exception",
+              "content": {
+                "text/plain; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "application/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "text/json; api-version=1": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "CalculationParameters": {
+          "required": [
+            "weaponId",
+            "impactConditions",
+            "releaseConditions",
+            "resultsRequested",
+            "targetLocation"
+          ],
+          "type": "object",
+          "properties": {
+            "weaponId": {
+              "type": "integer",
+              "description": "The unique weapon variant id that will be used when calculating the parameters.",
+              "format": "int32"
+            },
+            "resultsRequested": {
+              "$ref": "#/components/schemas/ResultsRequested"
+            },
+            "targetLocation": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "impactConditions": {
+              "$ref": "#/components/schemas/ImpactConditions"
+            },
+            "releaseConditions": {
+              "$ref": "#/components/schemas/ReleaseConditions"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Item for holding calculation conditions to be used when requesting calculation."
+        },
+        "CalculationResult": {
+          "type": "object",
+          "properties": {
+            "errorMessages": {
+              "description": "Collection of applicable error messages related to the calculating of the provided parameters.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "flyout": {
+              "nullable": true,
+              "$ref": "#/components/schemas/TrajectoryResults"
+            },
+            "inRangeFootprint": {
+              "nullable": true,
+              "$ref": "#/components/schemas/RegionResults"
+            },
+            "inZoneFootprint": {
+              "nullable": true,
+              "$ref": "#/components/schemas/RegionResults"
+            },
+            "inRangeLAR": {
+              "nullable": true,
+              "$ref": "#/components/schemas/RegionResults"
+            },
+            "inZoneLAR": {
+              "nullable": true,
+              "$ref": "#/components/schemas/RegionResults"
+            },
+            "inRangeMinMaxLAR": {
+              "nullable": true,
+              "$ref": "#/components/schemas/MinMaxRegion"
+            },
+            "inZoneMinMaxLAR": {
+              "nullable": true,
+              "$ref": "#/components/schemas/MinMaxRegion"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds all calculation results for a calculation request."
+        },
+        "CalculationResults": {
+          "type": "object",
+          "properties": {
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CalculationResult"
+              },
+              "description": "Collection of calculation results."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Aggregated results from one or more calculation requests."
+        },
+        "Constraint": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "number",
+              "description": "The minimum value of the constraint.",
+              "format": "double",
+              "nullable": true
+            },
+            "maximum": {
+              "type": "number",
+              "description": "The maximum value of the constraint.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "A minimum and maximum constraint"
+        },
+        "Coordinate": {
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "description": "The WGS-84 latitude position in decimal degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "longitude": {
+              "type": "number",
+              "description": "The WGS-84 longitude position in decimal degrees.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds latitude and longtiude position data."
+        },
+        "FOMInformation": {
+          "type": "object",
+          "required": [
+            "longDescription",
+            "shortDescription",
+            "version",
+            "weaponVariants"
+          ],
+          "properties": {
+            "longDescription": {
+              "type": "string",
+              "description": "In-depth information about the FOM.",
+              "nullable": false
+            },
+            "shortDescription": {
+              "type": "string",
+              "description": "Short description of the FOM.",
+              "nullable": false
+            },
+            "version": {
+              "type": "string",
+              "description": "Current version of the FOM.",
+              "nullable": false
+            },
+            "weaponVariants": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WeaponVariant"
+              },
+              "description": "Weapon Variants the FOM supports.",
+              "nullable": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "All information concerning the FOM."
+        },
+        "FuzeData": {
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The name of the fuze."
+            },
+            "armTimes": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "double"
+              },
+              "description": "The arm times of the fuze in seconds.",
+              "nullable": true
+            },
+            "functionTimes": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "double"
+              },
+              "description": "The function times of the fuze in milliseconds.",
+              "nullable": true
+            },
+            "hobSettings": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "double"
+              },
+              "description": "The potential height of burst values of the fuze in feet.",
+              "nullable": true
+            },
+            "locations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FuzeLocation"
+              },
+              "description": "The valid locations for the fuze on the weapon.",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Basic fuze data information related to a particular fuze for a weapon."
+        },
+        "FuzeLocation": {
+          "enum": [
+            "Nose",
+            "Tail",
+            "NoseAndTail",
+            "Integral"
+          ],
+          "type": "string",
+          "description": "Available fuze locations within a weapon."
+        },
+        "ImpactConditions": {
+          "type": "object",
+          "required": [
+            "impactAngle"
+          ],
+          "properties": {
+            "confidence": {
+              "type": "integer",
+              "description": "The confidence level of the horizontal and vertical accuracies of the DPI. The value should be either 50 or 90 percent.",
+              "format": "int32",
+              "nullable": true
+            },
+            "horizontalAccuracy": {
+              "maximum": 1000,
+              "minimum": 0,
+              "type": "number",
+              "description": "The horizontal accuracy (in feet) of the Circular Error Probable (CEP) of the DPI location.  The value range should be between 0 - 1000 feet.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAngle": {
+              "maximum": 90,
+              "minimum": 0,
+              "type": "number",
+              "description": "The desired terminal impact angle (in degrees) of the weapon relative to local level (0 = fly into a vertical wall, 90 = fly straight down). The value range should be between 0 - 90 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAngleLowerTolerance": {
+              "maximum": 90,
+              "minimum": 0,
+              "type": "number",
+              "description": "The Delta value (in degrees) to apply to the commanded impact angle to determine the acceptable lower limit for impact angles (e.g., a value of 10 associated with an angle of 65 results in a minimum acceptable impact angle of 55 degrees). The value range should be between 0 - 90 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAngleUpperTolerance": {
+              "maximum": 90,
+              "minimum": 0,
+              "type": "number",
+              "description": "The Delta value (in degrees) to apply to the commanded impact angle to determine the acceptable upper limit for impact angles (e.g., a value of 10 associated with an angle of 65 results in a maximum acceptable impact angle of 75 degrees). The value range should be between 0 - 90 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAzimuth": {
+              "maximum": 359,
+              "minimum": 0,
+              "type": "number",
+              "description": "The desired impact azimuth relative to north (0 = fly north, 90 = fly east). The value range should be between 0 - 359.9 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAzimuthLeftTolerance": {
+              "maximum": 359,
+              "minimum": 0,
+              "type": "number",
+              "description": "The Delta value (in degrees) to apply to the commanded impact azimuth to determine the range of acceptable impact azimuths to the left of the weapon course (e.g., a value of 10 with an azimuth of 45 results in impact azimuths from 35 to 45 being considered). The value range should be between 0 - 359.9 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAzimuthRightTolerance": {
+              "maximum": 359,
+              "minimum": 0,
+              "type": "number",
+              "description": "The Delta value (in degrees) to apply to the commanded impact azimuth to determine the range of acceptable impact azimuths to the right of the weapon course (e.g., a value of 10 with an azimuth of 45 results in impact azimuths from 45 to 55 being considered). The value range should be between 0 - 359.9 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "minImpactVelocity": {
+              "maximum": 26874,
+              "minimum": 0,
+              "type": "number",
+              "description": "The desired minimum velocity of the weapon at impact in feet per second. The value range should be between 0 - 26874 feet per second.",
+              "format": "double",
+              "nullable": true
+            },
+            "orientation": {
+              "$ref": "#/components/schemas/TargetOrientation"
+            },
+            "verticalAccuracy": {
+              "maximum": 1000,
+              "minimum": 0,
+              "type": "number",
+              "description": "The vertical accuracy Linear Error Probable (LEP) of the JDPI location in feet. The value range should be between 0 and 1000 feet.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Contains the impact conditions to be used for FOM calculation requests."
+        },
+        "ImpactConstraints": {
+          "type": "object",
+          "properties": {
+            "impactAngle": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "impactVelocity": {
+              "$ref": "#/components/schemas/Constraint"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Impact constraints for a weapon variant."
+        },
+        "LaserConstraints": {
+          "type": "object",
+          "properties": {
+            "laserCodes": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "description": "Laser code for the weapon variant.",
+                "format": "int32"
+              },
+              "description": "Valid laser codes for the weapon variant.",
+              "nullable": true
+            },
+            "laserPulseLogicSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/LaserPulseLogicSetting"
+              },
+              "description": "Laser pulse logic settings of the weapon variant.",
+              "nullable": true
+            }
+          }
+        },
+        "LaserPulseLogicSetting": {
+          "enum": [
+            "ShortLast",
+            "LongLast"
+          ],
+          "type": "string",
+          "description": "Potential Laser Pulse Logic Setting within a weapon."
+        },
+        "LaserWeaponVariant": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/WeaponVariant"
+            },
+            {
+              "type": "object",
+              "required": [
+                "laserConstraints"
+              ],
+              "properties": {
+                "laserConstraints": {
+                  "$ref": "#/components/schemas/LaserConstraints"
+                }
+              },
+              "description": "All the information concerning a specific laser weapon variant."
+            }
+          ]
+        },
+        "Location": {
+          "required": [
+            "altitude",
+            "coordinate"
+          ],
+          "type": "object",
+          "properties": {
+            "coordinate": {
+              "$ref": "#/components/schemas/Coordinate"
+            },
+            "altitude": {
+              "type": "number",
+              "description": "The height above elevation (HAE) altitude position of the location in feet.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds location information."
+        },
+        "MinMaxRegion": {
+          "type": "object",
+          "properties": {
+            "maxRegion": {
+              "$ref": "#/components/schemas/RegionResults"
+            },
+            "minRegion": {
+              "$ref": "#/components/schemas/RegionResults"
+            }
+          },
+          "additionalProperties": false,
+          "description": "The minimum and maximum data of a Launch Acceptability Region (LAR)."
+        },
+        "RegionResults": {
+          "type": "object",
+          "properties": {
+            "errorMessages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Applicable error messages for the region calculation.",
+              "nullable": true
+            },
+            "boundingCoordinates": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Coordinate"
+              },
+              "description": "The bounding coordinates around the region.",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds the calculated results for a region."
+        },
+        "ReleaseConditions": {
+          "type": "object",
+          "required": [
+            "aircraftAirspeed",
+            "aircraftCourse",
+            "aircraftFlightPathAngle"
+          ],
+          "properties": {
+            "aircraftAirspeed": {
+              "maximum": 2,
+              "minimum": 0.1,
+              "type": "number",
+              "description": "The aircraft true airspeed (Mach) at the weapon release point.  The value range should be between 0.1 and 2.0 Mach.",
+              "format": "double",
+              "nullable": true
+            },
+            "aircraftCourse": {
+              "maximum": 359.9,
+              "minimum": 0,
+              "type": "number",
+              "description": "The aircraft true course (in degrees true) at the weapon release point (direction of the horizontal component of velocity, 0 = north, 90 = east). The value range should be between 0.0 and 359.9 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "aircraftFlightPathAngle": {
+              "maximum": 45,
+              "minimum": -45,
+              "type": "number",
+              "description": "The flight path angle (in degrees) of the aircraft at the weapon release point. A positive value indicates a climb. The value range should be between -45.0 - 45.0 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "aircraftRoll": {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number",
+              "description": "The roll angle of the aircraft (in degerees) at the weapon release point (positive value is left wing up; 0 is a wings level release). The value range should be between -90.0 - 90.0 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "aircraftAltitude": {
+              "type": "number",
+              "description": "The height above elevation (HAE) altitude position (in feet) of the aircraft at the weapon relase point.",
+              "format": "double",
+              "nullable": true
+            },
+            "launchDateTime": {
+              "type": "string",
+              "description": "The date and time (Zulu) at the weapon release point.",
+              "nullable": true
+            },
+            "releaseLocation": {
+              "$ref": "#/components/schemas/Coordinate"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Contains the release conditions to be used for FOM calculation requests."
+        },
+        "ReleaseConstraints": {
+          "type": "object",
+          "properties": {
+            "airspeedInKCAS": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "airspeedInMach": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "altitudeInFeetAGL": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "altitudeInFeetMSL": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "pitch": {
+              "$ref": "#/components/schemas/Constraint"
+            },
+            "roll": {
+              "$ref": "#/components/schemas/Constraint"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Release constraints for a weapon variant."
+        },
+        "ResultsRequested": {
+          "type": "object",
+          "properties": {
+            "calculateAll": {
+              "type": "boolean",
+              "description": "Indicates if all results are being requested."
+            },
+            "calculateFlyout": {
+              "type": "boolean",
+              "description": "Indicates if the flyout trajectory results are being requested."
+            },
+            "calculateInZoneLAR": {
+              "type": "boolean",
+              "description": "Indicates if the In Zone LAR results are being requested."
+            },
+            "calculateInRangeLAR": {
+              "type": "boolean",
+              "description": "Indicates if the In Range LAR results are being requested."
+            },
+            "calculateInZoneFootprint": {
+              "type": "boolean",
+              "description": "Indicates if the In Zone Footprint results are being requested."
+            },
+            "calculateInRangeFootprint": {
+              "type": "boolean",
+              "description": "Indicates if the In Range Footprint results are being requested."
+            },
+            "calculateInZoneMinMaxLAR": {
+              "type": "boolean",
+              "description": "Indicates if the In Zone Min Max LAR results are being requested."
+            },
+            "calculateInRangeMinMaxLAR": {
+              "type": "boolean",
+              "description": "Indicates if the In Range Min Max LAR results are being requested."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds values to indicate which results are being requested as part of the calculation request. If a value is excluded, it will be treated as false."
+        },
+        "TargetOrientation": {
+          "enum": [
+            "Vertical",
+            "Horizontal"
+          ],
+          "type": "string",
+          "description": "The orientation values for a target."
+        },
+        "TrajectoryPoint": {
+          "required": [
+            "elapsedTime",
+            "location"
+          ],
+          "type": "object",
+          "properties": {
+            "location": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "elapsedTime": {
+              "type": "number",
+              "description": "The elapsed time (seconds) from the beginning of flight.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Holds data for a specific point on a flyout trajectory."
+        },
+        "TrajectoryResults": {
+          "required": [
+            "hitTarget"
+          ],
+          "type": "object",
+          "properties": {
+            "errorMessages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Error messages for the trajectory calculation.",
+              "nullable": true
+            },
+            "hitTarget": {
+              "type": "boolean",
+              "description": "Indicates the weapon \\\"hit\\\" the target."
+            },
+            "impactAngle": {
+              "maximum": 90,
+              "minimum": 0,
+              "type": "number",
+              "description": "The predicted impact angle (in degrees). The value range should be between 0.0 - 90.0 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactAzimuth": {
+              "maximum": 359,
+              "minimum": 0,
+              "type": "number",
+              "description": "The predicted impact azimuth (in degrees). The value range should be between 0.0 - 359.9 degrees.",
+              "format": "double",
+              "nullable": true
+            },
+            "impactLocation": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "impactVelocity": {
+              "maximum": 26874,
+              "minimum": 0,
+              "type": "number",
+              "description": "The predicted impact velocity in feet per second. The value range should be between 0.0 - 26874.0 feet per second.",
+              "format": "double",
+              "nullable": true
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TrajectoryPoint"
+              },
+              "description": "A list of coordinates and elevations that the trajectory traverses paired with their respective elapsed times.",
+              "nullable": true
+            },
+            "timeOfFlight": {
+              "maximum": 1500,
+              "minimum": 0,
+              "type": "number",
+              "description": "The predicted time of flight (seconds) from weapon release to impact. The value range should be between 0.0 - 1500.0 seconds.",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Contains the results of a calculated flyout trajectory."
+        },
+        "WeaponVariant": {
+          "required": [
+            "weaponId",
+            "fuzeData",
+            "impactConstraints",
+            "name",
+            "releaseConstraints",
+            "weaponAPI",
+            "weaponFamily"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The name of the weapon variant."
+            },
+            "weaponId": {
+              "type": "integer",
+              "description": "The FPMID for the weapon variant.",
+              "format": "int32"
+            },
+            "longDescription": {
+              "type": "string",
+              "description": "In-depth information about the weapon variant.",
+              "nullable": true
+            },
+            "shortDescription": {
+              "type": "string",
+              "description": "Short description of the weapon variant.",
+              "nullable": true
+            },
+            "fuzeData": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FuzeData"
+              },
+              "description": "All fuze data information concerning a weapon variant."
+            },
+            "impactConstraints": {
+              "$ref": "#/components/schemas/ImpactConstraints"
+            },
+            "releaseConstraints": {
+              "$ref": "#/components/schemas/ReleaseConstraints"
+            },
+            "weaponAPI": {
+              "type": "string",
+              "description": "The most current API for the weapon FOM service."
+            },
+            "weaponFamily": {
+              "type": "string",
+              "description": "The name of the weapon family that the weapon belongs to."
+            }
+          },
+          "additionalProperties": false,
+          "description": "All the information concerning a specific weapon variant."
+        }
+      }
+    }
+  }",
+        "information": "{
+    "laserConstraints": {
+      "laserCodes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199
+      ],
+      "laserPulseLogicSettings": [
+        "LongLast"
+      ]
+    },
+    "name": "GBU-X",
+    "weaponId": 20103,
+    "longDescription": "GBU-X",
+    "shortDescription": "GBU-X",
+    "fuzeData": [
+      {
+        "name": "DEMO/X",
+        "armTimes": [
+          4.0,
+          6.0,
+          7.0,
+          10.0,
+          14.0
+        ],
+        "functionTimes": [
+          10.0,
+          20.0,
+          30.0,
+          50.0,
+          80.0,
+          130.0,
+          210.0
+        ],
+        "hobSettings": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0,
+          7.0,
+          8.0,
+          9.0,
+          10.0,
+          11.0,
+          12.0,
+          13.0,
+          14.0,
+          15.0,
+          16.0,
+          17.0,
+          18.0,
+          19.0,
+          20.0,
+          21.0,
+          22.0,
+          23.0,
+          24.0,
+          25.0,
+          26.0,
+          27.0,
+          28.0,
+          29.0,
+          30.0,
+          31.0,
+          32.0
+        ],
+        "locations": [
+          "Nose",
+          "Tail",
+          "NoseAndTail",
+          "Integral"
+        ]
+      }
+    ],
+    "impactConstraints": {
+      "impactAngle": {
+        "minimum": 0.0,
+        "maximum": 90.0
+      },
+      "impactVelocity": {
+        "minimum": 0.0,
+        "maximum": 1.7976931348623157E+308
+      }
+    },
+    "releaseConstraints": {
+      "airspeedInKCAS": null,
+      "airspeedInMach": {
+        "minimum": 0.6,
+        "maximum": 1.5
+      },
+      "altitudeInFeetAGL": {
+        "minimum": 5000.0,
+        "maximum": 50100.0
+      },
+      "altitudeInFeetMSL": null,
+      "pitch": {
+        "minimum": -5.0,
+        "maximum": 5.0
+      },
+      "roll": {
+        "minimum": -45.0,
+        "maximum": 45.0
+      }
+    },
+    "weaponAPI": "{\n  \"openapi\": \"3.0.1\",\n  \"info\": {\n    \"title\": \"GBU-X Demo FOM Service API Version 1.0.1\",\n    \"description\": \"API for calculating trajectories and retrieving information about a GBU-X weapon variants.\",\n    \"version\": \"1.0.1\"\n  },\n  \"paths\": {\n    \"/calculation\": {\n      \"post\": {\n        \"tags\": [\n          \"CalculationApi\"\n        ],\n        \"summary\": \"Provides calculation results.\",\n        \"description\": \"Provides all requested calculation results for the specified weapon varaint utilizing the conditions set for calculation.\",\n        \"parameters\": [\n          {\n            \"name\": \"api-version\",\n            \"in\": \"query\",\n            \"description\": \"The requested API version\",\n            \"schema\": {\n              \"type\": \"string\",\n              \"default\": \"1\"\n            }\n          },\n          {\n            \"name\": \"accept-Version\",\n            \"in\": \"header\",\n            \"schema\": {\n              \"type\": \"string\"\n            }\n          }\n        ],\n        \"requestBody\": {\n          \"description\": \"A JSON-formatted string of a collection of calculation parameters to be used for calculation. The calculation parameters should follow the prescribed format for calculation parameters as listed in this schema.\",\n          \"content\": {\n            \"application/json; api-version=1\": {\n              \"schema\": {\n                \"type\": \"string\"\n              }\n            },\n            \"text/json; api-version=1\": {\n              \"schema\": {\n                \"type\": \"string\"\n              }\n            },\n            \"application/*+json; api-version=1\": {\n              \"schema\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"responses\": {\n          \"200\": {\n            \"description\": \"A JSON-formatted string of calculation results. The calculation results should follow the prescribed format for calculation results as listed in this schema.\",\n            \"content\": {\n              \"text/plain; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"application/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"text/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              }\n            }\n          },\n          \"400\": {\n            \"description\": \"Invalid Parameters\"\n          },\n          \"500\": {\n            \"description\": \"Internal Exception\",\n            \"content\": {\n              \"text/plain; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"application/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"text/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/information\": {\n      \"get\": {\n        \"tags\": [\n          \"InformationApi\"\n        ],\n        \"summary\": \"Provides information regarding the FOM.\",\n        \"description\": \"Provides information regarding the FOM and its weapon variants.\",\n        \"parameters\": [\n          {\n            \"name\": \"api-version\",\n            \"in\": \"query\",\n            \"description\": \"The requested API version\",\n            \"schema\": {\n              \"type\": \"string\",\n              \"default\": \"1\"\n            }\n          },\n          {\n            \"name\": \"accept-Version\",\n            \"in\": \"header\",\n            \"schema\": {\n              \"type\": \"string\"\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"A JSON-formatted string of FOM information. The information should follow the prescribed format for FOM information as listed in this schema.\",\n            \"content\": {\n              \"text/plain; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"application/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"text/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              }\n            }\n          },\n          \"500\": {\n            \"description\": \"Internal Exception\",\n            \"content\": {\n              \"text/plain; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"application/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"text/json; api-version=1\": {\n                \"schema\": {\n                  \"type\": \"string\"\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"CalculationParameters\": {\n        \"required\": [\n          \"weaponId\",\n          \"impactConditions\",\n          \"releaseConditions\",\n          \"resultsRequested\",\n          \"targetLocation\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"weaponId\": {\n            \"type\": \"integer\",\n            \"description\": \"The unique weapon variant id that will be used when calculating the parameters.\",\n            \"format\": \"int32\"\n          },\n          \"resultsRequested\": {\n            \"$ref\": \"#/components/schemas/ResultsRequested\"\n          },\n          \"targetLocation\": {\n            \"$ref\": \"#/components/schemas/Location\"\n          },\n          \"impactConditions\": {\n            \"$ref\": \"#/components/schemas/ImpactConditions\"\n          },\n          \"releaseConditions\": {\n            \"$ref\": \"#/components/schemas/ReleaseConditions\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Item for holding calculation conditions to be used when requesting calculation.\"\n      },\n      \"CalculationResult\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"errorMessages\": {\n            \"description\": \"Collection of applicable error messages related to the calculating of the provided parameters.\",\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            }\n          },\n          \"flyout\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/TrajectoryResults\"\n          },\n          \"inRangeFootprint\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          },\n          \"inZoneFootprint\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          },\n          \"inRangeLAR\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          },\n          \"inZoneLAR\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          },\n          \"inRangeMinMaxLAR\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/MinMaxRegion\"\n          },\n          \"inZoneMinMaxLAR\": {\n            \"nullable\": true,\n            \"$ref\": \"#/components/schemas/MinMaxRegion\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds all calculation results for a calculation request.\"\n      },\n      \"CalculationResults\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"results\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/CalculationResult\"\n            },\n            \"description\": \"Collection of calculation results.\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Aggregated results from one or more calculation requests.\"\n      },\n      \"Constraint\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"minimum\": {\n            \"type\": \"number\",\n            \"description\": \"The minimum value of the constraint.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"maximum\": {\n            \"type\": \"number\",\n            \"description\": \"The maximum value of the constraint.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"A minimum and maximum constraint\"\n      },\n      \"Coordinate\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"latitude\": {\n            \"type\": \"number\",\n            \"description\": \"The WGS-84 latitude position in decimal degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"longitude\": {\n            \"type\": \"number\",\n            \"description\": \"The WGS-84 longitude position in decimal degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds latitude and longtiude position data.\"\n      },\n      \"FOMInformation\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"longDescription\",\n          \"shortDescription\",\n          \"version\",\n          \"weaponVariants\"\n        ],\n        \"properties\": {\n          \"longDescription\": {\n            \"type\": \"string\",\n            \"description\": \"In-depth information about the FOM.\",\n            \"nullable\": false\n          },\n          \"shortDescription\": {\n            \"type\": \"string\",\n            \"description\": \"Short description of the FOM.\",\n            \"nullable\": false\n          },\n          \"version\": {\n            \"type\": \"string\",\n            \"description\": \"Current version of the FOM.\",\n            \"nullable\": false\n          },\n          \"weaponVariants\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/WeaponVariant\"\n            },\n            \"description\": \"Weapon Variants the FOM supports.\",\n            \"nullable\": false\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"All information concerning the FOM.\"\n      },\n      \"FuzeData\": {\n        \"required\": [\n          \"name\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\",\n            \"description\": \"The name of the fuze.\"\n          },\n          \"armTimes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"number\",\n              \"format\": \"double\"\n            },\n            \"description\": \"The arm times of the fuze in seconds.\",\n            \"nullable\": true\n          },\n          \"functionTimes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"number\",\n              \"format\": \"double\"\n            },\n            \"description\": \"The function times of the fuze in milliseconds.\",\n            \"nullable\": true\n          },\n          \"hobSettings\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"number\",\n              \"format\": \"double\"\n            },\n            \"description\": \"The potential height of burst values of the fuze in feet.\",\n            \"nullable\": true\n          },\n          \"locations\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/FuzeLocation\"\n            },\n            \"description\": \"The valid locations for the fuze on the weapon.\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Basic fuze data information related to a particular fuze for a weapon.\"\n      },\n      \"FuzeLocation\": {\n        \"enum\": [\n          \"Nose\",\n          \"Tail\",\n          \"NoseAndTail\",\n          \"Integral\"\n        ],\n        \"type\": \"string\",\n        \"description\": \"Available fuze locations within a weapon.\"\n      },\n      \"ImpactConditions\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"impactAngle\"\n        ],\n        \"properties\": {\n          \"confidence\": {\n            \"type\": \"integer\",\n            \"description\": \"The confidence level of the horizontal and vertical accuracies of the DPI. The value should be either 50 or 90 percent.\",\n            \"format\": \"int32\",\n            \"nullable\": true\n          },\n          \"horizontalAccuracy\": {\n            \"maximum\": 1000,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The horizontal accuracy (in feet) of the Circular Error Probable (CEP) of the DPI location.  The value range should be between 0 - 1000 feet.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAngle\": {\n            \"maximum\": 90,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The desired terminal impact angle (in degrees) of the weapon relative to local level (0 = fly into a vertical wall, 90 = fly straight down). The value range should be between 0 - 90 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAngleLowerTolerance\": {\n            \"maximum\": 90,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The Delta value (in degrees) to apply to the commanded impact angle to determine the acceptable lower limit for impact angles (e.g., a value of 10 associated with an angle of 65 results in a minimum acceptable impact angle of 55 degrees). The value range should be between 0 - 90 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAngleUpperTolerance\": {\n            \"maximum\": 90,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The Delta value (in degrees) to apply to the commanded impact angle to determine the acceptable upper limit for impact angles (e.g., a value of 10 associated with an angle of 65 results in a maximum acceptable impact angle of 75 degrees). The value range should be between 0 - 90 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAzimuth\": {\n            \"maximum\": 359,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The desired impact azimuth relative to north (0 = fly north, 90 = fly east). The value range should be between 0 - 359.9 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAzimuthLeftTolerance\": {\n            \"maximum\": 359,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The Delta value (in degrees) to apply to the commanded impact azimuth to determine the range of acceptable impact azimuths to the left of the weapon course (e.g., a value of 10 with an azimuth of 45 results in impact azimuths from 35 to 45 being considered). The value range should be between 0 - 359.9 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAzimuthRightTolerance\": {\n            \"maximum\": 359,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The Delta value (in degrees) to apply to the commanded impact azimuth to determine the range of acceptable impact azimuths to the right of the weapon course (e.g., a value of 10 with an azimuth of 45 results in impact azimuths from 45 to 55 being considered). The value range should be between 0 - 359.9 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"minImpactVelocity\": {\n            \"maximum\": 26874,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The desired minimum velocity of the weapon at impact in feet per second. The value range should be between 0 - 26874 feet per second.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"orientation\": {\n            \"$ref\": \"#/components/schemas/TargetOrientation\"\n          },\n          \"verticalAccuracy\": {\n            \"maximum\": 1000,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The vertical accuracy Linear Error Probable (LEP) of the JDPI location in feet. The value range should be between 0 and 1000 feet.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Contains the impact conditions to be used for FOM calculation requests.\"\n      },\n      \"ImpactConstraints\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"impactAngle\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"impactVelocity\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Impact constraints for a weapon variant.\"\n      },\n      \"LaserConstraints\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"laserCodes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"integer\",\n              \"description\": \"Laser code for the weapon variant.\",\n              \"format\": \"int32\"\n            },\n            \"description\": \"Valid laser codes for the weapon variant.\",\n            \"nullable\": true\n          },\n          \"laserPulseLogicSettings\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/LaserPulseLogicSetting\"\n            },\n            \"description\": \"Laser pulse logic settings of the weapon variant.\",\n            \"nullable\": true\n          }\n        }\n      },\n      \"LaserPulseLogicSetting\": {\n        \"enum\": [\n          \"ShortLast\",\n          \"LongLast\"\n        ],\n        \"type\": \"string\",\n        \"description\": \"Potential Laser Pulse Logic Setting within a weapon.\"\n      },\n      \"LaserWeaponVariant\": {\n        \"allOf\": [\n          {\n            \"$ref\": \"#/components/schemas/WeaponVariant\"\n          },\n          {\n            \"type\": \"object\",\n            \"required\": [\n              \"laserConstraints\"\n            ],\n            \"properties\": {\n              \"laserConstraints\": {\n                \"$ref\": \"#/components/schemas/LaserConstraints\"\n              }\n            },\n            \"description\": \"All the information concerning a specific laser weapon variant.\"\n          }\n        ]\n      },\n      \"Location\": {\n        \"required\": [\n          \"altitude\",\n          \"coordinate\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"coordinate\": {\n            \"$ref\": \"#/components/schemas/Coordinate\"\n          },\n          \"altitude\": {\n            \"type\": \"number\",\n            \"description\": \"The height above elevation (HAE) altitude position of the location in feet.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds location information.\"\n      },\n      \"MinMaxRegion\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"maxRegion\": {\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          },\n          \"minRegion\": {\n            \"$ref\": \"#/components/schemas/RegionResults\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"The minimum and maximum data of a Launch Acceptability Region (LAR).\"\n      },\n      \"RegionResults\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"errorMessages\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            },\n            \"description\": \"Applicable error messages for the region calculation.\",\n            \"nullable\": true\n          },\n          \"boundingCoordinates\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/Coordinate\"\n            },\n            \"description\": \"The bounding coordinates around the region.\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds the calculated results for a region.\"\n      },\n      \"ReleaseConditions\": {\n        \"type\": \"object\",\n        \"required\": [\n          \"aircraftAirspeed\",\n          \"aircraftCourse\",\n          \"aircraftFlightPathAngle\"\n        ],\n        \"properties\": {\n          \"aircraftAirspeed\": {\n            \"maximum\": 2,\n            \"minimum\": 0.1,\n            \"type\": \"number\",\n            \"description\": \"The aircraft true airspeed (Mach) at the weapon release point.  The value range should be between 0.1 and 2.0 Mach.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"aircraftCourse\": {\n            \"maximum\": 359.9,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The aircraft true course (in degrees true) at the weapon release point (direction of the horizontal component of velocity, 0 = north, 90 = east). The value range should be between 0.0 and 359.9 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"aircraftFlightPathAngle\": {\n            \"maximum\": 45,\n            \"minimum\": -45,\n            \"type\": \"number\",\n            \"description\": \"The flight path angle (in degrees) of the aircraft at the weapon release point. A positive value indicates a climb. The value range should be between -45.0 - 45.0 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"aircraftRoll\": {\n            \"maximum\": 90,\n            \"minimum\": -90,\n            \"type\": \"number\",\n            \"description\": \"The roll angle of the aircraft (in degerees) at the weapon release point (positive value is left wing up; 0 is a wings level release). The value range should be between -90.0 - 90.0 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"aircraftAltitude\": {\n            \"type\": \"number\",\n            \"description\": \"The height above elevation (HAE) altitude position (in feet) of the aircraft at the weapon relase point.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"launchDateTime\": {\n            \"type\": \"string\",\n            \"description\": \"The date and time (Zulu) at the weapon release point.\",\n            \"nullable\": true\n          },\n          \"releaseLocation\": {\n            \"$ref\": \"#/components/schemas/Coordinate\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Contains the release conditions to be used for FOM calculation requests.\"\n      },\n      \"ReleaseConstraints\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"airspeedInKCAS\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"airspeedInMach\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"altitudeInFeetAGL\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"altitudeInFeetMSL\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"pitch\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          },\n          \"roll\": {\n            \"$ref\": \"#/components/schemas/Constraint\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Release constraints for a weapon variant.\"\n      },\n      \"ResultsRequested\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"calculateAll\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if all results are being requested.\"\n          },\n          \"calculateFlyout\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the flyout trajectory results are being requested.\"\n          },\n          \"calculateInZoneLAR\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Zone LAR results are being requested.\"\n          },\n          \"calculateInRangeLAR\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Range LAR results are being requested.\"\n          },\n          \"calculateInZoneFootprint\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Zone Footprint results are being requested.\"\n          },\n          \"calculateInRangeFootprint\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Range Footprint results are being requested.\"\n          },\n          \"calculateInZoneMinMaxLAR\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Zone Min Max LAR results are being requested.\"\n          },\n          \"calculateInRangeMinMaxLAR\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the In Range Min Max LAR results are being requested.\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds values to indicate which results are being requested as part of the calculation request. If a value is excluded, it will be treated as false.\"\n      },\n      \"TargetOrientation\": {\n        \"enum\": [\n          \"Vertical\",\n          \"Horizontal\"\n        ],\n        \"type\": \"string\",\n        \"description\": \"The orientation values for a target.\"\n      },\n      \"TrajectoryPoint\": {\n        \"required\": [\n          \"elapsedTime\",\n          \"location\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"location\": {\n            \"$ref\": \"#/components/schemas/Location\"\n          },\n          \"elapsedTime\": {\n            \"type\": \"number\",\n            \"description\": \"The elapsed time (seconds) from the beginning of flight.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Holds data for a specific point on a flyout trajectory.\"\n      },\n      \"TrajectoryResults\": {\n        \"required\": [\n          \"hitTarget\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"errorMessages\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            },\n            \"description\": \"Error messages for the trajectory calculation.\",\n            \"nullable\": true\n          },\n          \"hitTarget\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates the weapon \\\\\\\"hit\\\\\\\" the target.\"\n          },\n          \"impactAngle\": {\n            \"maximum\": 90,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The predicted impact angle (in degrees). The value range should be between 0.0 - 90.0 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactAzimuth\": {\n            \"maximum\": 359,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The predicted impact azimuth (in degrees). The value range should be between 0.0 - 359.9 degrees.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"impactLocation\": {\n            \"$ref\": \"#/components/schemas/Location\"\n          },\n          \"impactVelocity\": {\n            \"maximum\": 26874,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The predicted impact velocity in feet per second. The value range should be between 0.0 - 26874.0 feet per second.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          },\n          \"path\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/TrajectoryPoint\"\n            },\n            \"description\": \"A list of coordinates and elevations that the trajectory traverses paired with their respective elapsed times.\",\n            \"nullable\": true\n          },\n          \"timeOfFlight\": {\n            \"maximum\": 1500,\n            \"minimum\": 0,\n            \"type\": \"number\",\n            \"description\": \"The predicted time of flight (seconds) from weapon release to impact. The value range should be between 0.0 - 1500.0 seconds.\",\n            \"format\": \"double\",\n            \"nullable\": true\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"Contains the results of a calculated flyout trajectory.\"\n      },\n      \"WeaponVariant\": {\n        \"required\": [\n          \"weaponId\",\n          \"fuzeData\",\n          \"impactConstraints\",\n          \"name\",\n          \"releaseConstraints\",\n          \"weaponAPI\",\n          \"weaponFamily\"\n        ],\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\",\n            \"description\": \"The name of the weapon variant.\"\n          },\n          \"weaponId\": {\n            \"type\": \"integer\",\n            \"description\": \"The FPMID for the weapon variant.\",\n            \"format\": \"int32\"\n          },\n          \"longDescription\": {\n            \"type\": \"string\",\n            \"description\": \"In-depth information about the weapon variant.\",\n            \"nullable\": true\n          },\n          \"shortDescription\": {\n            \"type\": \"string\",\n            \"description\": \"Short description of the weapon variant.\",\n            \"nullable\": true\n          },\n          \"fuzeData\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"$ref\": \"#/components/schemas/FuzeData\"\n            },\n            \"description\": \"All fuze data information concerning a weapon variant.\"\n          },\n          \"impactConstraints\": {\n            \"$ref\": \"#/components/schemas/ImpactConstraints\"\n          },\n          \"releaseConstraints\": {\n            \"$ref\": \"#/components/schemas/ReleaseConstraints\"\n          },\n          \"weaponAPI\": {\n            \"type\": \"string\",\n            \"description\": \"The most current API for the weapon FOM service.\"\n          },\n          \"weaponFamily\": {\n            \"type\": \"string\",\n            \"description\": \"The name of the weapon family that the weapon belongs to.\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"description\": \"All the information concerning a specific weapon variant.\"\n      }\n    }\n  }\n}",
+    "weaponFamily": "Demo"
+}

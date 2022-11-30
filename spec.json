@@ -1,0 +1,598 @@
+
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FOM Gateway Service API Version 1.0",
+    "description": "API for dynamically routing calculation requests to FOM microservices",
+    "version": "1.0.3-pullrequest0004-0004-build_5-feature-ImplementEnvironmentBased"
+  },
+  "paths": {
+    "/jobrequest": {
+      "post": {
+        "tags": [
+          "CalculationApi"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "schema": {
+              "type": "string",
+              "default": "1.0"
+            }
+          },
+          {
+            "name": "accept-Version",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            },
+            "text/json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            },
+            "application/*+json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobrequestasync": {
+      "post": {
+        "tags": [
+          "CalculationApi"
+        ],
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "schema": {
+              "type": "string",
+              "default": "1.0"
+            }
+          },
+          {
+            "name": "accept-Version",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            },
+            "text/json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            },
+            "application/*+json; api-version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/FOMCalculationJobParameters"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobresults/{jobId}": {
+      "get": {
+        "tags": [
+          "ResultsApi"
+        ],
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "schema": {
+              "type": "string",
+              "default": "1.0"
+            }
+          },
+          {
+            "name": "accept-Version",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/FOMCalculationJobResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/weapons": {
+      "get": {
+        "tags": [
+          "WeaponsApi"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "schema": {
+              "type": "string",
+              "default": "1.0"
+            }
+          },
+          {
+            "name": "accept-Version",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponsQueryResult"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponsQueryResult"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponsQueryResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/weapons/info": {
+      "get": {
+        "tags": [
+          "WeaponsApi"
+        ],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "description": "The requested API version",
+            "schema": {
+              "type": "string",
+              "default": "1.0"
+            }
+          },
+          {
+            "name": "accept-Version",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponInfoQueryResults"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponInfoQueryResults"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponInfoQueryResults"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json; api-version=1.0": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FOMCalculationJobParameters": {
+        "type": "object",
+        "properties": {
+          "requests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FOMCalculationJobResult": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobParameters": {
+            "$ref": "#/components/schemas/FOMCalculationJobParameters"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FOMCalculationResult"
+            },
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FOMCalculationResult": {
+        "required": [
+          "weaponID"
+        ],
+        "type": "object",
+        "properties": {
+          "weaponID": {
+            "type": "string"
+          },
+          "calculationParameters": {
+            "type": "string",
+            "nullable": true
+          },
+          "calculationResults": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JobStatus": {
+        "enum": [
+          "Submitted",
+          "Cancelled",
+          "Cancelling",
+          "Executing",
+          "Failed",
+          "Completed"
+        ],
+        "type": "string"
+      },
+      "Weapon": {
+        "required": [
+          "name",
+          "weaponFamily",
+          "weaponID"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "weaponID": {
+            "type": "string"
+          },
+          "weaponFamily": {
+            "type": "string"
+          },
+          "longDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortDescription": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeaponInfo": {
+        "required": [
+          "version",
+          "weaponID"
+        ],
+        "type": "object",
+        "properties": {
+          "weaponID": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "api": {
+            "type": "string",
+            "nullable": true
+          },
+          "information": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeaponInfoQueryResults": {
+        "type": "object",
+        "properties": {
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "infoResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeaponInfo"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeaponsQueryResult": {
+        "type": "object",
+        "properties": {
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "queryResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Weapon"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
